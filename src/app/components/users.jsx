@@ -15,7 +15,6 @@ const Users = ({ users: allUsers, ...rest }) => {
 
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
-        console.log(item);
     };
 
     useEffect(() => {
