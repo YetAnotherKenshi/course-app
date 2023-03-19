@@ -10,7 +10,6 @@ const UserTable = ({
     selectedSort,
     onToggleBookMark,
     onDelete,
-    lastSorted,
     ...rest
 }) => {
     const columns = {
@@ -52,7 +51,6 @@ const UserTable = ({
             selectedSort={selectedSort}
             columns={columns}
             data={users}
-            lastSorted={lastSorted}
         />
     );
 };

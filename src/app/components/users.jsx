@@ -12,8 +12,7 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
-    const [lastSorted, setLastSorted] = useState({});
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 8;
 
     const [users, setUsers] = useState();
@@ -51,7 +50,6 @@ const Users = () => {
     };
     const handleSort = (item) => {
         setSortBy(item);
-        setLastSorted({ path: item.path, order: item.order });
     };
 
     if (users) {
@@ -101,7 +99,6 @@ const Users = () => {
                             selectedSort={sortBy}
                             onDelete={handleDelete}
                             onToggleBookMark={handleToggleBookMark}
-                            lastSorted={lastSorted}
                         />
                     )}
                     <div className="d-flex justify-content-center">
