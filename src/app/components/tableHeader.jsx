@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const TableHeader = ({ onSort, selectedSort, columns, lastSorted }) => {
+const TableHeader = ({ onSort, selectedSort, columns }) => {
     const handleSort = (item) => {
         if (selectedSort.path === item) {
             onSort({
@@ -26,7 +26,8 @@ const TableHeader = ({ onSort, selectedSort, columns, lastSorted }) => {
                         {...{ role: columns[column].path && "button" }}
                         scope="col"
                     >
-                        {columns[column].name} {lastSorted.path && lastSorted.path === columns[column].path ? lastSorted.order === "asc" ? <i className="bi bi-caret-up-fill"></i> : <i className="bi bi-caret-down-fill"></i> : ""}
+                        {columns[column].name}
+                        {selectedSort.path === columns[column].path ? (selectedSort.order === "asc" ? (<i className="bi bi-caret-up-fill"></i>) : (<i className="bi bi-caret-down-fill"></i>)) : ("")}
                     </th>
                 ))}
             </tr>
