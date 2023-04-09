@@ -65,7 +65,9 @@ const UsersList = () => {
                       JSON.stringify(selectedProf)
               )
             : users.filter((user) =>
-                  user.name.toLowerCase().includes(searchTerm.trim())
+                  user.name
+                      .toLowerCase()
+                      .includes(searchTerm.trim().toLowerCase())
               );
 
         const count = filteredUsers.length;

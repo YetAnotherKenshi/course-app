@@ -1,5 +1,4 @@
 import React from "react";
-import TextField from "./textField";
 import PropTypes from "prop-types";
 
 const SearchBar = ({ searchTerm, onChange }) => {
@@ -8,11 +7,13 @@ const SearchBar = ({ searchTerm, onChange }) => {
     };
     return (
         <form onSubmit={handleSubmit}>
-            <TextField
-                label=""
-                name="search"
+            <input
+                type="text"
+                id="searchbar"
                 value={searchTerm}
                 onChange={onChange}
+                name="search"
+                placeholder="Search..."
             />
         </form>
     );
