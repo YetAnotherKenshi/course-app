@@ -7,42 +7,47 @@ import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
-
+import SearchBar from "./searchBar";
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const [searchTerm, setSearchTerm] = useState("");
     const pageSize = 8;
 
     const [users, setUsers] = useState();
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+    const handleChange = ({ target }) => {
+        setSearchTerm(target.value);
+        setSelectedProf(undefined);
+    };
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId));
     };
     const handleToggleBookMark = (id) => {
-        setUsers(
-            users.map((user) => {
-                if (user._id === id) {
-                    return { ...user, bookmark: !user.bookmark };
-                }
-                return user;
-            })
-        );
-        console.log(id);
+        const newArray = users.map((user) => {
+            if (user._id === id) {
+                return { ...user, bookmark: !user.bookmark };
+            }
+            return user;
+        });
+        setUsers(newArray);
     };
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
     }, []);
+
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedProf]);
 
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        setSearchTerm("");
     };
 
     const handlePageChange = (pageIndex) => {
@@ -59,7 +64,9 @@ const UsersList = () => {
                       JSON.stringify(user.profession) ===
                       JSON.stringify(selectedProf)
               )
-            : users;
+            : users.filter((user) =>
+                  user.name.toLowerCase().includes(searchTerm)
+              );
 
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(
@@ -92,6 +99,10 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <SearchBar
+                        searchTerm={searchTerm}
+                        onChange={handleChange}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
@@ -113,7 +124,7 @@ const UsersList = () => {
             </div>
         );
     }
-    return "Loading...";
+    return "loading...";
 };
 UsersList.propTypes = {
     users: PropTypes.array
