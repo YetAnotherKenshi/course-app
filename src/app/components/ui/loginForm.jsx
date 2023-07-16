@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import TextField from "../common/form/textField";
+import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
+import TextField from "../common/form/textField";
 import CheckBoxField from "../common/form/checkBoxField";
 
 const LoginForm = () => {
@@ -16,14 +16,13 @@ const LoginForm = () => {
             [target.name]: target.value
         }));
     };
-
     const validatorConfig = {
         email: {
             isRequired: {
                 message: "Электронная почта обязательна для заполнения"
             },
             isEmail: {
-                message: "Email введён некорректно"
+                message: "Email введен некорректно"
             }
         },
         password: {
@@ -42,20 +41,22 @@ const LoginForm = () => {
             }
         }
     };
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const isValid = validate();
-        if (!isValid) return;
-        console.log(data);
-    };
     useEffect(() => {
         validate();
     }, [data]);
     const validate = () => {
         const errors = validator(data, validatorConfig);
         setErrors(errors);
+        return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const isValid = validate();
+        if (!isValid) return;
+        console.log(data);
+    };
     return (
         <form onSubmit={handleSubmit}>
             <TextField
@@ -81,9 +82,9 @@ const LoginForm = () => {
                 Оставаться в системе
             </CheckBoxField>
             <button
+                className="btn btn-primary w-100 mx-auto"
                 type="submit"
                 disabled={!isValid}
-                className="btn btn-primary w-100 mx-auto"
             >
                 Submit
             </button>

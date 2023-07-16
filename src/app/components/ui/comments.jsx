@@ -1,9 +1,8 @@
 import { orderBy } from "lodash";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import api from "../../api";
-import AddCommentForm from "../common/form/comments/addCommentForm";
-import CommentsList from "../common/form/comments/commentsList";
+import { useParams } from "react-router-dom";
+import CommentsList, { AddCommentForm } from "../common/comments";
 
 const Comments = () => {
     const { userId } = useParams();
@@ -24,7 +23,6 @@ const Comments = () => {
         });
     };
     const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
-
     return (
         <>
             <div className="card mb-2">
@@ -33,16 +31,18 @@ const Comments = () => {
                     <AddCommentForm onSubmit={handleSubmit} />
                 </div>
             </div>
-            <div className="card mb-3">
-                <div className="card-body ">
-                    <h2>Comments</h2>
-                    <hr />
-                    <CommentsList
-                        comments={sortedComments}
-                        onRemove={handleRemoveComment}
-                    />
+            {sortedComments.length > 0 && (
+                <div className="card mb-3">
+                    <div className="card-body ">
+                        <h2>Comments</h2>
+                        <hr />
+                        <CommentsList
+                            comments={sortedComments}
+                            onRemove={handleRemoveComment}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 };
