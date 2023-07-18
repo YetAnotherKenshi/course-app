@@ -12,7 +12,8 @@ const LoginForm = () => {
         password: "",
         stayOn: false
     });
-    const { signIn } = useAuth();
+
+    const { logIn } = useAuth();
     const [errors, setErrors] = useState({});
     const [authError, setAuthError] = useState(null);
     const handleChange = (target) => {
@@ -62,9 +63,14 @@ const LoginForm = () => {
         const isValid = validate();
         if (!isValid) return;
         try {
-            await signIn(data);
-            history.push("/");
+            await logIn(data);
+            history.push(
+                history.location.state
+                    ? history.location.state.from.pathname
+                    : "/"
+            );
         } catch (error) {
+            console.log(error);
             setAuthError(error.message);
         }
     };

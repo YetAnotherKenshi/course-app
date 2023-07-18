@@ -8,6 +8,7 @@ import UserTable from "../../ui/usersTable";
 import _ from "lodash";
 import { useUser } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +17,8 @@ const UsersListPage = () => {
     const pageSize = 8;
 
     const { users } = useUser();
-    const { professions } = useProfessions();
+    const { currentUser } = useAuth();
+    const { isLoading: professionsLoading, professions } = useProfessions();
     const handleDelete = (userId) => {
         // setUsers(users.filter((user) => user._id !== userId));
         console.log(userId);
@@ -52,7 +54,7 @@ const UsersListPage = () => {
         setSortBy(item);
     };
 
-    if (users) {
+    function filterUsers(data) {
         const filteredUsers = searchQuery
             ? users.filter(
                   (user) =>
@@ -67,21 +69,19 @@ const UsersListPage = () => {
                       JSON.stringify(selectedProf)
               )
             : users;
-
-        const count = filteredUsers.length;
-        const sortedUsers = _.orderBy(
-            filteredUsers,
-            [sortBy.path],
-            [sortBy.order]
-        );
-        const usersCrop = paginate(sortedUsers, currentPage, pageSize);
-        const clearFilter = () => {
-            setSelectedProf();
-        };
-
+        return filteredUsers.filter((u) => u._id !== currentUser._id);
+    }
+    const filteredUsers = filterUsers(users);
+    const count = filteredUsers.length;
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+    const usersCrop = paginate(sortedUsers, currentPage, pageSize);
+    const clearFilter = () => {
+        setSelectedProf();
+    };
+    if (users) {
         return (
             <div className="d-flex">
-                {professions && (
+                {professions && !professionsLoading && (
                     <div className="d-flex flex-column flex-shrink-0 p-3">
                         <GroupList
                             selectedItem={selectedProf}
