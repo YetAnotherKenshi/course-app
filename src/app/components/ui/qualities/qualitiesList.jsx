@@ -14,13 +14,16 @@ const QualitiesList = ({ qualities }) => {
     useEffect(() => {
         dispatch(loadQualitiesList());
     }, []);
-    if (isLoading) return "Loading...";
     const qualitiesList = useSelector(getQualitesByIds(qualities));
     return (
         <>
-            {qualitiesList.map((qual) => (
-                <Quality key={qual._id} {...qual} />
-            ))}
+            {!isLoading ? (
+                qualitiesList.map((qual) => (
+                    <Quality key={qual._id} {...qual} />
+                ))
+            ) : (
+                <p>Loading...</p>
+            )}
         </>
     );
 };

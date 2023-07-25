@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useAuth } from "../../../hooks/useAuth";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
     getQualities,
     getQualitiesLoadingStatus
@@ -16,9 +14,10 @@ import {
     getProfessions,
     getProfessionsLoadingStatus
 } from "../../../store/professions";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const EditUserPage = () => {
-    const history = useHistory();
+    const dispatch = useDispatch();
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState();
     const professions = useSelector(getProfessions());
@@ -33,7 +32,7 @@ const EditUserPage = () => {
         label: p.name,
         value: p._id
     }));
-    const { currentUser, updateUser } = useAuth();
+    const currentUser = useSelector(getCurrentUserData());
     const [errors, setErrors] = useState({});
     // const getProfessionById = (id) => {
     //     for (const prof of professions) {
@@ -57,16 +56,16 @@ const EditUserPage = () => {
     //     }
     //     return qualitiesArray;
     // };
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        const newData = {
-            ...data,
-            qualities: data.qualities.map((q) => q.value)
-        };
-        await updateUser(newData);
-        history.push(`/users/${currentUser._id}`);
+        dispatch(
+            updateUser({
+                ...data,
+                qualities: data.qualities.map((q) => q.value)
+            })
+        );
     };
 
     const validatorConfig = {
